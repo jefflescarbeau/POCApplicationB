@@ -34,7 +34,7 @@ def get_salesforce_public_keys():
     except Exception as e:
         print(f"Error fetching SFDC public keys: {e}")
         return {}
-        
+
 get_salesforce_public_keys()  # Initial fetch
 
 def token_required(f):
@@ -46,19 +46,21 @@ def token_required(f):
             return jsonify({"error": "Authorization header is missing or invalid"}), 401
 
         token = auth_header.split(' ')[1]
-        
+        print("begin token validation")
         try:
             # 1. Get the key ID (kid) from the token header without verifying
             unverified_header = jwt.get_unverified_header(token)
             kid = unverified_header['kid']
+            print(f"Token kid: {kid}")
             
             # 2. Fetch the corresponding public key
             public_keys = get_salesforce_public_keys()
             public_key = public_keys.get(kid)
-            
+            print("Public key found")
             if not public_key:
                 return jsonify({"error": "Public key not found for token"}), 401
             
+            print("decode token begin")
             # 3. Decode and validate the token
             jwt.decode(
                 token,
@@ -67,6 +69,7 @@ def token_required(f):
                 audience=AUDIENCE, # Validates the 'aud' claim
                 issuer=SALESFORCE_URL # Validates the 'iss' claim
             )
+            print("decode token complete")
         except jwt.ExpiredSignatureError:
             return jsonify({"error": "Token has expired"}), 401
         except jwt.InvalidTokenError as e:
@@ -82,6 +85,7 @@ def home():
 @app.route('/api/data')
 @token_required
 def get_protected_data():
+    print("Accessing protected data endpoint")
     """This is a protected endpoint that requires a valid token."""
     return jsonify({
         "message": "Access Granted!",
