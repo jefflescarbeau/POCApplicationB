@@ -49,6 +49,7 @@ def token_required(f):
         if not auth_header or not auth_header.startswith('Bearer '):
             return jsonify({"error": "Authorization header is missing or invalid"}), 401
 
+        print(f"Authorization header: {auth_header}")
         token = auth_header.split(' ')[1]
         print("begin token validation")
         print(f"Token: {token}")
