@@ -70,6 +70,8 @@ def token_required(f):
             
             print("decode token begin")
             # 3. Decode and validate the token
+            print(f"Public Key: {public_key}")
+            print(f"Audience: {AUDIENCE}, Issuer: {SALESFORCE_URL}")
             jwt.decode(
                 token,
                 key=public_key,
