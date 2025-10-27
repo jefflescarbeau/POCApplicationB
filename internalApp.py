@@ -49,7 +49,9 @@ def token_required(f):
         print("begin token validation")
         try:
             # 1. Get the key ID (kid) from the token header without verifying
+            print("inside of try catch block")
             unverified_header = jwt.get_unverified_header(token)
+            print("unverified header obtained")
             kid = unverified_header['kid']
             print(f"Token kid: {kid}")
             
