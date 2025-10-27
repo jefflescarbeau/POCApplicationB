@@ -72,13 +72,15 @@ def token_required(f):
             # 3. Decode and validate the token
             print(f"Public Key: {public_key}")
             print(f"Audience: {AUDIENCE}, Issuer: {SALESFORCE_URL}")
-            jwt.decode(
+            decoded_token = jwt.decode(
                 token,
                 key=public_key,
                 algorithms=['RS256'],
-                audience=AUDIENCE, # Validates the 'aud' claim
+                audience= [SALESFORCE_URL], # Validates the 'aud' claim
                 issuer=SALESFORCE_URL # Validates the 'iss' claim
             )
+            if decoded_token.get('client_id') != AUDIENCE:
+                 return jsonify({"error": "Invalid client_id claim"}), 401
             print("decode token complete")
         except jwt.ExpiredSignatureError:
             return jsonify({"error": "Token has expired"}), 401
