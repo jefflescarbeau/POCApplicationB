@@ -1,8 +1,12 @@
 import os
 import requests
 import jwt
+import logging
 from flask import Flask, jsonify, request
 from functools import wraps
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
 
@@ -76,7 +80,9 @@ def token_required(f):
             return jsonify({"error": "Token has expired"}), 401
         except jwt.InvalidTokenError as e:
             return jsonify({"error": "Token is invalid", "details": str(e)}), 401
-        
+        except Exception as e:
+            logger.exception(f"Error occurred during token validation: {e}")
+            return jsonify({"error": "An error occurred during token validation", "details": str(e)}), 401
         return f(*args, **kwargs)
     return decorated
 
