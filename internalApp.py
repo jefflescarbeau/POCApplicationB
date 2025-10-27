@@ -51,6 +51,7 @@ def token_required(f):
 
         token = auth_header.split(' ')[1]
         print("begin token validation")
+        print(f"Token: {token}")
         try:
             # 1. Get the key ID (kid) from the token header without verifying
             print("inside of try catch block")
