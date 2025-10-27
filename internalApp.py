@@ -34,6 +34,8 @@ def get_salesforce_public_keys():
     except Exception as e:
         print(f"Error fetching SFDC public keys: {e}")
         return {}
+        
+get_salesforce_public_keys()  # Initial fetch
 
 def token_required(f):
     """A decorator to protect routes by validating the JWT."""
