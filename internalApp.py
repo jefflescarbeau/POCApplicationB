@@ -76,16 +76,12 @@ def token_required(f):
                 token,
                 key=public_key,
                 algorithms=['RS256'],
-                audience= [SALESFORCE_URL], # Validates the 'aud' claim
+                audience=[SALESFORCE_URL], # Validates the 'aud' claim
                 issuer=SALESFORCE_URL # Validates the 'iss' claim
             )
             if decoded_token.get('client_id') != AUDIENCE:
                  return jsonify({"error": "Invalid client_id claim"}), 401
             print("decode token complete")
-        except jwt.ExpiredSignatureError:
-            return jsonify({"error": "Token has expired"}), 401
-        except jwt.InvalidTokenError as e:
-            return jsonify({"error": "Token is invalid", "details": str(e)}), 401
         except Exception as e:
             logger.exception(f"Error occurred during token validation: {e}")
             return jsonify({"error": "An error occurred during token validation", "details": str(e)}), 401
